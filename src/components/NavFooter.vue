@@ -1,5 +1,4 @@
 <template>
-  
   <div>
     nav-footer
   </div>
