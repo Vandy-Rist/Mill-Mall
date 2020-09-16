@@ -248,9 +248,9 @@
               height: 0;
               opacity: 0;
               overflow: hidden;
-              
               border-top: 1px solid #E5E5E5;
               box-shadow: 0px 7px 6px 0px rgba(0, 0, 0, 0.11);
+              z-index: 10;
               transition: all .5s;
               .product{
                 position: relative;
@@ -293,18 +293,16 @@
                   display: none;
                 }
               }
-
             }
-            
           }
-         
         }
         .header-search{
           width: 319px;
           .wrapper{
             height: 50px;
             border: 1px solid #E0E0E0;
-            @include flex();
+            display: flex;
+            align-items: center;
             input{
               border: none;
               border-right: 1px solid #E0E0E0;
@@ -314,7 +312,7 @@
               padding-left: 14px;
             }
             a{
-              @include bgImg(18px,18px,'/imgs/icon-search.png',55px);
+              @include bgImg(18px,18px,'/imgs/icon-search.png');
               margin-left: 17px;
             }
           }
