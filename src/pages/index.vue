@@ -6,7 +6,16 @@
           <ul class="menu-wrap">
             <li class="menu-item">
               <a href="javascript:;">手机 电话卡</a>
-              <div class="children"></div>
+              <div class="children">
+                <ul v-for="(item,i) in menuList" :key="i">
+                  <li v-for="(sub,j) in item" :key="j">
+                    <a :href="sub?'/#/product'+sub.id:''">
+                      <img :src="sub?sub.img:'/imgs/item-box-1.png'" >
+                      {{sub?sub.name:'小米cc9'}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </li>
             <li class="menu-item">
               <a href="javascript:;">电视 盒子</a>
@@ -100,6 +109,31 @@
             id:'',
             img:'/imgs/slider/slide-4.jpg'
           }
+        ],
+        menuList:[
+          [
+            {
+              id:30,
+              img:'/imgs/item-box-1.png',
+              name:'小米cc9'
+            },
+            {
+              id:31,
+              img:'/imgs/item-box-2.png',
+              name:'小米8青春版'
+            },
+            {
+              id:32,
+              img:'/imgs/item-box-3.jpg',
+              name:'Redmi K20 Pro'
+            },
+            {
+              id:33,
+              img:'/imgs/item-box-4.jpg',
+              name:'移动4G专区'
+            },
+          ],
+          [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]
         ]
       }
     }
@@ -107,6 +141,7 @@
 </script>
 <style lang="scss">
   @import './../assets/scss/mixin.scss';
+  @import './../assets/scss/config.scss';
   .index{
     .swiper-box{
       .nav-menu{
@@ -123,7 +158,7 @@
             line-height: 50px;
             font-size: 16px;
             a{
-              color: #ffffff;
+              color: $colorG;
               padding-left: 30px;
               display: block;
               position: relative;
@@ -134,8 +169,42 @@
                 content: '';
                 @include bgImg(10px,15px,'/imgs/icon-arrow.png')
               }
-              &:hover{
-                background-color:  #FF6600;
+            }
+            &:hover{
+                background-color: $colorA;
+                .children{
+                  display: block;
+                }
+              }
+            .children{
+              display: none;
+              width: 962px;
+              height: 451px;
+              background-color: $colorG;
+              position: absolute;
+              top: 0;
+              left: 264px;
+              border:1px solid $colorH;
+              ul{
+                height: 75px;
+                display: flex;
+                justify-content: space-between;
+                li{
+                  height: 75px;
+                  line-height: 75px;
+                  flex: 1;
+                  padding-left: 23px;
+                  a{
+                    color: $colorB;
+                    font-size: 14px;
+                  }
+                  img{
+                    width: 42px;
+                    height: 35px;
+                    vertical-align: middle;
+                    margin-right: 15px;
+                  }
+                }
               }
             }
           }
