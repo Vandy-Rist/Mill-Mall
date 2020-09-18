@@ -50,9 +50,46 @@
           <div class="swiper-button-next" slot="button-next"></div>
         </swiper>
       </div>
-      <div class="ads-box"></div>
-      <div class="banner"></div>
-      <div class="product-box"></div>
+      <div class="ads-box">
+        <a :href="'/#/product'+item.id" v-for="(item,index) in adsList" :key="index">
+          <img :src="item.img" alt="">
+        </a>
+      </div>
+      <div class="banner">
+        <a href="/#/product/30">
+          <img src="/imgs/banner-1.png">
+        </a>
+      </div>
+    </div>
+
+    <div class="product-box">
+      <div class="container">
+        <h2>手机</h2>
+        <div class="wrapper">
+          <div class="banner-left">
+            <a href="/#/product/35">
+              <img src="/imgs/mix-alpha.jpg" alt="">
+            </a>
+          </div>
+          <div class="list-box">
+            <div class="list" v-for="(arr,i) in phoneList" :key="i">
+              <div class="item" v-for="(item,j) in arr" :key="j">
+                <span :class="{'new-bg':j%2 == 0}">新品</span>
+                <div class="item-img">
+                  <img :src="item.mainImage" alt="">
+                </div>
+                <div class="item-info">
+                  <h3>{{item.name}}</h3>
+                  <p>{{item.subtitle}}</p>
+                  <p class="price">{{item.price}}元</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
     <service-bar></service-bar>
   </div>
@@ -60,7 +97,6 @@
 <script>
   import ServiceBar from './../components/ServiceBar'
   import { Swiper, SwiperSlide} from 'vue-awesome-swiper'
-  // , directive 
   import 'swiper/css/swiper.css'
   // import 'swiper/swiper-bundle.css'
   export default{
@@ -70,9 +106,6 @@
       SwiperSlide,
       ServiceBar
     },
-    // directives: {
-    //   swiper: directive
-    // },
     data(){
       return {
         swiperOption:{
@@ -134,14 +167,50 @@
             },
           ],
           [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]
-        ]
+        ],
+        adsList:[
+          {
+            id:33,
+            img:'/imgs/ads/ads-1.png'
+          },
+          {
+            id:48,
+            img:'/imgs/ads/ads-2.jpg'
+          },
+          {
+            id:45,
+            img:'/imgs/ads/ads-3.png'
+          },
+          {
+            id:47,
+            img:'/imgs/ads/ads-4.jpg'
+          }
+        ],
+        phoneList:[]
+      }
+    },
+    mounted(){
+      this.init();
+    },
+    methods:{
+      init(){
+        this.axios.get('/products',{
+          params:{
+            categoryId: 100012,
+            pageSize: 8
+          }
+        }).then((res)=>{
+          this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
+        })
       }
     }
+
   }
 </script>
 <style lang="scss">
   @import './../assets/scss/mixin.scss';
   @import './../assets/scss/config.scss';
+  @import './../assets/scss/base.scss';
   .index{
     .swiper-box{
       .nav-menu{
@@ -221,5 +290,103 @@
         }
       }  
     }
+    .ads-box{
+      @include flex();
+      margin-top: 14px;
+      margin-bottom: 31px;
+      a{
+        display: inline-block;
+        width: 296px;
+        height: 167px;
+      }
+    }
+    .banner{
+      margin-bottom: 50px;
+      img{
+        height: 130px;
+      }
+    }
+    .product-box{
+      background-color: $colorJ;
+      padding: 30px 0 50px;
+      h2{
+        font-size: $fontF;
+        height: 21px;
+        line-height: 21px;
+        color: $colorB;
+        margin-bottom: 20px;
+      }
+      .wrapper{
+        display: flex;
+        .banner-left{
+         margin-right: 16px;
+         img{
+           width: 224px;
+           height: 619px;
+         }
+        }
+        .list-box{
+          .list{
+            @include flex();
+            width: 986px;
+            margin-bottom: 14px;
+            .item{
+              width: 236px;
+              height: 302px;
+              text-align: center;
+              background-color: $colorG;
+              span{
+                display: inline-block;
+                width: 67px;
+                height: 24px;
+                line-height: 24px;
+                font-size: $fontJ;
+                color: $colorG;
+                &.new-bg{
+                  background-color: #7ECF68;
+                }
+                &.kill-bg{
+                  background-color: #E82626;
+                }
+              }
+              .item-img{
+                img{
+                  width:100%;
+                  height:195px;
+                }
+              }
+              .item-info{
+                h3{
+                  font-size: $fontJ;
+                  color: $colorB;
+                  line-height: $fontJ;
+                  font-weight: bold;
+                }
+                p{
+                  color: $colorD;
+                  line-height: 13px;
+                  margin:6px 0 13px;
+                }
+                .price{
+                  font-size: $fontJ;
+                  color: #F20A0A;
+                  font-weight: bold;
+                  cursor: pointer;
+                  &:after{
+                    @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
+                    content: '';
+                    margin-left: 5px;
+                    vertical-align: middle;
+                  }
+                } 
+              }
+            }
+          }
+
+        }
+
+      }
+    }
+
   }
 </style>
