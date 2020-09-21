@@ -92,10 +92,22 @@
 
     </div>
     <service-bar></service-bar>
+    <modal
+      title="提示"
+      sureText="查看购物车"
+      btnType="middle"
+      :showModal="showModal"
+      @submit="goToCart"
+      @cancel="showModal=false">
+      <template v-slot:body>
+        <p>商品添加成功！</p>
+      </template>
+    </modal>
   </div>
 </template>
 <script>
   import ServiceBar from './../components/ServiceBar'
+  import Modal from './../components/Modal'
   import { Swiper, SwiperSlide} from 'vue-awesome-swiper'
   import 'swiper/css/swiper.css'
   // import 'swiper/swiper-bundle.css'
@@ -104,7 +116,8 @@
     components:{
       Swiper,
       SwiperSlide,
-      ServiceBar
+      ServiceBar,
+      Modal
     },
     data(){
       return {
@@ -114,7 +127,7 @@
           effect:'cube',
           cubeEffect: {
             shadowOffset: 100,
-            shadowScale: 0.6
+            shadowScale: 0.3
           },
           pagination: {
             el: '.swiper-pagination',
@@ -186,7 +199,8 @@
             img:'/imgs/ads/ads-4.jpg'
           }
         ],
-        phoneList:[]
+        phoneList:[],
+        showModal: true
       }
     },
     mounted(){
@@ -200,8 +214,12 @@
             pageSize: 8
           }
         }).then((res)=>{
+          // res.list = res.list.slice(6,14);
           this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
         })
+      },
+      goToCart(){
+        this.$router.push('/cart');
       }
     }
 
@@ -293,7 +311,7 @@
     .ads-box{
       @include flex();
       margin-top: 14px;
-      margin-bottom: 31px;
+      margin-bottom: 14px;
       a{
         display: inline-block;
         width: 296px;
@@ -382,11 +400,8 @@
               }
             }
           }
-
         }
-
       }
     }
-
   }
 </style>
