@@ -30,20 +30,19 @@
     props:{
       // 弹框类型：小small、中middle、大large、表单form
       modalType:{
-        type:String,
-        default:'form'
+        type: String,
+        default: 'form'
       },
-      // 弹框标题
       title:String,
       // 按钮类型: 1:确定按钮 2：取消按钮 3：确定取消
       btnType:String,
       sureText:{
         type:String,
-        default:'确定'
+        default:"确定"
       },
-      cacelText:{
+      cancelText:{
         type:String,
-        default:'取消'
+        default:"取消"
       },
       showModal:Boolean
     }
