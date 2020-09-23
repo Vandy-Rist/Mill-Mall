@@ -48,6 +48,7 @@
 </template>
 
 <script>
+  // import {mapActions} from 'vuex';
   export default {
     name: 'login',
     data(){
@@ -66,9 +67,11 @@
         }).then((res)=>{
           this.$cookie.set('userId',res.id,{expires: '1D'});
           //TODO 保存用户名
+          this.$store.dispatch('saveUserName',res.username);
           this.$router.push('/index')
         })
       },
+      // ...mapActions(['saveUserName']),
       register(){
         this.axios.post('/user/register',{
           username : 'admin1',
