@@ -1,7 +1,7 @@
 <template>
   <div class="nav-bar" :class="{'is_fixed':isfixed}">
     <div class="container">
-      <div class="pro-name">红米Note 7</div>
+      <div class="pro-name">{{title}}</div>
       <div class="pro-param">
         <a href="javascript:;">概述</a>
         <span>|</span>
@@ -17,6 +17,9 @@
 <script>
   export default {
     name: 'product-param',
+    props:{
+      title:String
+    },
     data(){
       return {
         isfixed:false
