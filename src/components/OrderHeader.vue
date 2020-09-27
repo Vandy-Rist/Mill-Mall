@@ -38,12 +38,12 @@
     }
     .title{
       float: left;
-      margin-left: 37px;
+      margin-left: 54px;
       h2{
         font-size: 28px;
         color: #333333;
         span{
-        margin-left: 11px;
+        margin-left: 17px;
         font-size: 14px;
         color: #999999;
       }
