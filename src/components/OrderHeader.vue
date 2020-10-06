@@ -32,6 +32,7 @@
 <style lang="scss">
   .order-header{
     padding: 30px 0;
+    border-bottom:2px solid #f60;
     .header-logo{
       float: left;
     }
