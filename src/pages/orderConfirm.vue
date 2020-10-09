@@ -32,7 +32,7 @@
                   {{item.receiverProvince + '' + item.receiverCity + '' + item.receiverDistrict + '' + item.receiverAddress}}
                 </div>
                 <div class="action">
-                  <a href="javascript:;" class="fl">
+                  <a href="javascript:;" class="fl" @click="delAddress(item)">
                     <svg class="icon icon-del">
                       <use xlink:href="#icon-del"></use>
                     </svg>
@@ -101,10 +101,64 @@
         </div>
       </div>
     </div>
+    <modal
+    title="新增确认"
+    btnType="1"
+    :showModal="showEditModal"
+    @cancel="showEditModal=false"
+    @submit=submitAddress
+    >
+    <template v-slot:body>
+      <div class="edit-wrap">
+        <div class="item">
+          <input type="text" class="input" placeholder="姓名">
+          <input type="text" class="input" placeholder="手机号">
+        </div>
+        <div class="item">
+          <select name="province">
+            <option value="北京">北京</option>
+            <option value="天津">天津</option>
+            <option value="河北">河北</option>
+          </select>
+          <select name="city">
+            <option value="北京">北京</option>
+            <option value="天津">天津</option>
+            <option value="河北">石家庄</option>
+          </select>
+          <select name="distrct">
+            <option value="北京">昌平区</option>
+            <option value="天津">海淀区</option>
+            <option value="河北">东城区</option>
+            <option value="天津">西城区</option>
+            <option value="河北">顺义区</option>
+            <option value="天津">房山区</option>
+          </select>
+        </div>
+        <div class="item">
+          <textarea name="street"></textarea>
+        </div>
+        <div class="item">
+          <input type="text" class="input" placeholder="邮编">
+        </div>
+      </div>
+    </template>
+    </modal>
+    <modal
+    title="删除确认"
+    btnType="1"
+    :showModal="showDelModal"
+    @cancel="showDelModal=false"
+    @submit=submitAddress
+    >
+    <template v-slot:body>
+      <p>您确认要删除此地址吗?</p>
+    </template>
+    </modal>
   </div>
 </template>
 
 <script>
+  import Modal from './../components/Modal';
   export default {
     name: 'order-confirm',
     data(){
@@ -112,8 +166,15 @@
         list:[],//地址信息
         cartList:[],//购物车中选中的商品列表
         cartTotalPrice:0,//商品总价
-        count:0//选择的商品数量
+        count:0,//选择的商品数量
+        checkedItem:{},//选中的商品对象
+        userAction:'',//用户的点击行为 0-新增，1-修改，2-删除
+        showDelModal:false,//删除的模态框
+        showEditModal:true ////新增的的模态框
       }
+    },
+    components:{
+      Modal
     },
     mounted(){
       this.getAddressList();
@@ -124,6 +185,32 @@
         this.axios.get('/shippings').then((res)=>{
           this.list = res.list;
         })
+      },
+      delAddress(item){
+        this.checkedItem = item;
+        this.userAction = 2;
+        this.showDelModal = true;
+      },
+      submitAddress(){
+        let {checkedItem,userAction} = this;
+        let method,url;
+        if(userAction == 0){
+          method = 'post',url = '/shippings';
+        }else if(userAction == 1){
+          method = 'put',url = `/shippings/${checkedItem.id}`;
+        }else{
+          method = 'delete',url = `/shippings/${checkedItem.id}`;
+        }
+        this.axios[method](url).then(()=>{
+          this.closeModal();
+          this.getAddressList();
+          this.$message.success('删除地址成功');
+        });
+      },
+      closeModal(){
+        this.checkedItem = {};
+        this.userAction = '';
+        this.showDelModal = false;
       },
       getCartList(){
         this.axios.get('/carts').then((res)=>{
@@ -287,6 +374,37 @@
         .btn-group{
           margin-top: 37px;
           text-align: right;
+        }
+      }
+    }
+    .edit-wrap{
+      font-size: 14px;
+      .item{
+        margin-bottom: 15px;
+        input{
+          display: inline-block;
+          box-sizing: border-box;
+          width: 283px;
+          height: 40px;
+          line-height: 40px;
+          padding-left: 15px;
+          border: 1px solid #E5E5E5;
+          &+.input{
+            margin-left: 14px;
+          }
+        }
+        select{
+          height: 40px;
+          line-height: 40px;
+          border: 1px solid #E5E5E5;
+          margin-right: 15px;
+        }
+        textarea{
+          height: 62px;
+          width: 100%;
+          padding: 13px 15px;
+          box-sizing: border-box;
+          border: 1px solid #E5E5E5; 
         }
       }
     }
