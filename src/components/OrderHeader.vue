@@ -8,7 +8,6 @@
          <h2>{{title}}
            <slot name="tip"></slot>
          </h2>
-         
        </div>
        <div class="username">
          <a href="javascript:;">{{username}}</a>
