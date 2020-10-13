@@ -51,11 +51,25 @@
       </div>
     </div>
     <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg" ></scan-pay-code>
+    <modal
+    title="支付确认"
+    btnType="3"
+    sureText="查看订单"
+    cancelText="未支付"
+    :showModal="showPayModal"
+    @submit="goOrderList"
+    @cancel="showPayModal=false"
+    >
+    <template v-slot:body>
+      <p>您确认是否完成支付？</p>
+    </template>
+    </modal>
   </div>
 </template>
 <script>
   import QRCode from 'qrcode';
   import ScanPayCode from './../components/ScanPayCode';
+  import Modal from './../components/Modal';
   export default{
   name:'order-pay',
   data(){
@@ -67,11 +81,14 @@
       payType:'',
       showPay:false, //是否显示微信支付弹框
       payImg:'',//微信支付的二维码地址
-      payment:0 //支付总金额
+      payment:0, //支付总金额
+      showPayModal:false, // 二次支付确认弹框
+      T:''//定时器id
     }
   },
   components:{
-    ScanPayCode
+    ScanPayCode,
+    Modal
   },
   mounted(){
     this.getOrderDetail();
@@ -99,14 +116,31 @@
           .then((url)=>{
             this.showPay = true;
             this.payImg = url;
+            this.loopPayStatus();
           }).catch(()=>{
-            this.$message.error('微信二维码生成失败');
+            this.$message.error('微信二维码生成失败，请稍后重试');
           })
         })
       }
     },
+    //微信支付弹框
     closePayModal(){
       this.showPay = false;
+      this.showPayModal = true;
+      clearInterval(this.T);
+    },
+    loopPayStatus(){
+      this.T = setInterval(() => {
+        this.axios.get(`/orders/${this.orderId}`).then((res)=>{
+          if(res.status == 20){
+            clearInterval(this.T);
+            this.goOrderList();
+          }
+        })
+      }, 1000);
+    },
+    goOrderList(){
+      this.$router.push('/order/list');
     }
   }
 }
