@@ -11,7 +11,7 @@
               <p>收货信息：{{addressInfo}}</p>
             </div>
             <div class="order-total">
-              <p>应付总额：<span>2599</span>元</p>
+              <p>应付总额：<span>{{payment}}</span>元</p>
               <p>订单详情<em class="icon-down" :class="{'up':showDetail}" @click="showDetail=!showDetail"></em></p>
             </div>
           </div>
@@ -50,36 +50,63 @@
         </div>
       </div>
     </div>
+    <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg" ></scan-pay-code>
   </div>
 </template>
 <script>
-export default{
+  import QRCode from 'qrcode';
+  import ScanPayCode from './../components/ScanPayCode';
+  export default{
   name:'order-pay',
   data(){
     return {
-      orderNo:this.$route.query.orderNo,
+      orderId:this.$route.query.orderNo,
       addressInfo:'',//收货人地址
       orderDetail:[],//订单详情，包含商品列表
       showDetail:false,//是否显示订单详情
-      payType:''
+      payType:'',
+      showPay:false, //是否显示微信支付弹框
+      payImg:'',//微信支付的二维码地址
+      payment:0 //支付总金额
     }
+  },
+  components:{
+    ScanPayCode
   },
   mounted(){
     this.getOrderDetail();
   },
   methods:{
     getOrderDetail(){
-      this.axios.get(`/orders/${this.orderNo}`).then((res)=>{
+      this.axios.get(`/orders/${this.orderId}`).then((res)=>{
         this.orderDetail = res.orderItemVoList;
         let item = res.shippingVo;
         this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress} ${item.receiverZip}`;
+        this.payment = res.payment;
       })
     },
     paysubmit(payType){
       if(payType==1){
-        window.open('/#/order/alipay?orderId='+ this.orderNo,'_blank');
+        window.open('/#/order/alipay?orderId='+ this.orderId,'_blank');
+      }else{
+        this.axios.post('/pay',{  
+          orderId:this.orderId,
+          orderName:'小米商城', //扫码支付时订单名称
+          amount:0.01, //单位元
+          payType:2 //1支付宝，2微信
+        }).then((res)=>{
+          QRCode.toDataURL(res.content)
+          .then((url)=>{
+            this.showPay = true;
+            this.payImg = url;
+          }).catch(()=>{
+            this.$message.error('微信二维码生成失败');
+          })
+        })
       }
-
+    },
+    closePayModal(){
+      this.showPay = false;
     }
   }
 }

@@ -15,3 +15,8 @@ location /api/ {
 }
 线上nginx配置的时候，代理域名后面需要加/,这样在请求的时候会去掉/api，否则请求的时候会包含/api
 
+## 微信扫码支付开发文档
+
+https://pay.weixin.qq.com/wiki/doc/api/index.html
+
+https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5
