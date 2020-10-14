@@ -44,9 +44,7 @@
               </div>
             </div>
           </div>
-          <div class="load-more">
-            <el-button type="primary" :loading="loading" @click="loadMoreList">加载更多</el-button>
-          </div>
+          <!-- 分页器 -->
           <el-pagination v-if="false"
             class="pagination"
             background
@@ -55,6 +53,13 @@
             :total="total"
             @current-change="pageChange">
           </el-pagination>
+          <!-- 加载按钮 -->
+          <div class="load-more" v-if="hasNextPage">
+            <el-button type="primary" :loading="loadStyle" @click="loadMoreList">加载更多</el-button>
+          </div>
+           <div v-infinite-scroll="scrollMore" infinite-scroll-disabled="busy" infinite-scroll-distance="420">
+             <img src="/img/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loadStyle">
+          </div>
           <no-data v-if="!loading && list.length == 0"></no-data>
         </div>
       </div>
@@ -67,15 +72,19 @@
   import Loading from './../components/Loading';
   import NoData from './../components/NoData';
   import {Pagination,Button} from 'element-ui';
+  import infiniteScroll from 'vue-infinite-scroll'
   export default {
     name: 'order-list',
     data(){
       return{
         list:[], // 订单列表
-        loading:false,
+        loading:true,
         pageNum:1,
         total:0,
-        pageSize:10
+        pageSize:10,
+        loadStyle:false,//按钮的加载效果
+        busy:false, //滚动加载是否触发
+        hasNextPage:true //控制按钮的显示与隐藏
       }
     },
     components:{
@@ -85,32 +94,80 @@
       [Pagination.name]:Pagination,
       [Button.name]:Button
     },
+    directives:{
+      infiniteScroll
+    },
     mounted(){
       this.getOrderList();
     },
     methods:{
+      //1.分页器请求订单列表
       getOrderList(){
-        this.loading = true;
         this.axios.get('/orders',{
           params:{
             pageNum:this.pageNum,
-            pageSize:1
           }
         }).then((res)=>{
           this.loading = false;
-          this.list = this.list.concat(res.list);
+          this.list = res.list;
           this.total = res.total;
         }).catch(()=>{
           this.loading = false;
         })
       },
-      loadMoreList(){
-        this.pageNum++;
-        this.getOrderList();
+      // 2.按钮点击加载更多
+      getListbyLoad(){
+        this.loadStyle = true;
+        this.busy = true;
+        this.axios.get('/orders',{
+          params:{
+            pageNum:this.pageNum,
+            pageSize:10
+          }
+        }).then((res)=>{
+          this.loading = false;
+          this.loadStyle = false;
+          this.list = this.list.concat(res.list);
+          this.hasNextPage = res.hasNextPage;
+          this.busy = false;
+        })
       },
+      // 3.页面滚动加载更多
+      getListbyScroll(){
+        this.loadStyle = true;
+        this.axios.get('/orders',{
+          params:{
+            pageNum:this.pageNum,
+            pageSize:10
+          }
+        }).then((res)=>{
+          this.loading = false;
+          this.loadStyle = false;
+          this.list = this.list.concat(res.list);
+          if(res.hasNextPage){
+            this.busy = false;
+          }else{
+            this.busy = true;
+          }
+        })
+      },
+      //分页器 当前页码 点击事件
       pageChange(pageNum){
         this.pageNum = pageNum;
         this.getOrderList();
+      },
+      //加载按钮点击事件
+      loadMoreList(){
+        this.pageNum++;
+        this.getListbyLoad();
+      },
+      // 滚动加载
+      scrollMore(){
+        this.busy = true;
+        setTimeout(()=>{
+          this.pageNum++;
+          this.getListbyScroll();
+        },500)
       },
       goPay(orderNo){
         //路由跳转的三种方式
@@ -198,12 +255,16 @@
       .pagination{
         text-align: right;
       }
+      //分页器的样式覆盖
       .el-pagination.is-background .el-pager li:not(.disabled).active {
         background-color: #FF6600;
-        color: #FFF;
       }
-      .load-more{
+      .load-more{ //按钮的样式覆盖
         text-align: center;
+        .el-button--primary {
+          background-color: #FF6600;
+          border-color: #FF6600;
+        }
       }
 
     }
