@@ -45,7 +45,7 @@
             </div>
           </div>
           <!-- 分页器 -->
-          <el-pagination v-if="false"
+          <el-pagination v-if="true"
             class="pagination"
             background
             layout="prev, pager, next"
@@ -57,7 +57,7 @@
           <div class="load-more" v-if="hasNextPage">
             <el-button type="primary" :loading="loadStyle" @click="loadMoreList">加载更多</el-button>
           </div>
-           <div v-infinite-scroll="scrollMore" infinite-scroll-disabled="busy" infinite-scroll-distance="420">
+           <div v-if="false" v-infinite-scroll="scrollMore" infinite-scroll-disabled="true" infinite-scroll-distance="420">
              <img src="/img/loading-svg/loading-spinning-bubbles.svg" alt="" v-show="loadStyle">
           </div>
           <no-data v-if="!loading && list.length == 0"></no-data>
@@ -84,7 +84,7 @@
         pageSize:10,
         loadStyle:false,//按钮的加载效果
         busy:false, //滚动加载是否触发
-        hasNextPage:true //控制按钮的显示与隐藏
+        hasNextPage:false //控制按钮的显示与隐藏
       }
     },
     components:{
