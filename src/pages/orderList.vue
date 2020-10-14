@@ -44,7 +44,10 @@
               </div>
             </div>
           </div>
-          <el-pagination
+          <div class="load-more">
+            <el-button type="primary" :loading="loading" @click="loadMoreList">加载更多</el-button>
+          </div>
+          <el-pagination v-if="false"
             class="pagination"
             background
             layout="prev, pager, next"
@@ -63,13 +66,13 @@
   import OrderHeader from './../components/OrderHeader';
   import Loading from './../components/Loading';
   import NoData from './../components/NoData';
-  import {Pagination} from 'element-ui';
+  import {Pagination,Button} from 'element-ui';
   export default {
     name: 'order-list',
     data(){
       return{
         list:[], // 订单列表
-        loading:true,
+        loading:false,
         pageNum:1,
         total:0,
         pageSize:10
@@ -79,24 +82,31 @@
       OrderHeader,
       Loading,
       NoData,
-      [Pagination.name]:Pagination
+      [Pagination.name]:Pagination,
+      [Button.name]:Button
     },
     mounted(){
       this.getOrderList();
     },
     methods:{
       getOrderList(){
+        this.loading = true;
         this.axios.get('/orders',{
           params:{
-            pageNum:this.pageNum
+            pageNum:this.pageNum,
+            pageSize:1
           }
         }).then((res)=>{
           this.loading = false;
-          this.list = res.list;
+          this.list = this.list.concat(res.list);
           this.total = res.total;
         }).catch(()=>{
           this.loading = false;
         })
+      },
+      loadMoreList(){
+        this.pageNum++;
+        this.getOrderList();
       },
       pageChange(pageNum){
         this.pageNum = pageNum;
@@ -191,6 +201,9 @@
       .el-pagination.is-background .el-pager li:not(.disabled).active {
         background-color: #FF6600;
         color: #FFF;
+      }
+      .load-more{
+        text-align: center;
       }
 
     }
