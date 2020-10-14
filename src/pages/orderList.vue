@@ -44,6 +44,14 @@
               </div>
             </div>
           </div>
+          <el-pagination
+            class="pagination"
+            background
+            layout="prev, pager, next"
+            :pageSize="pageSize"
+            :total="total"
+            @current-change="pageChange">
+          </el-pagination>
           <no-data v-if="!loading && list.length == 0"></no-data>
         </div>
       </div>
@@ -55,28 +63,44 @@
   import OrderHeader from './../components/OrderHeader';
   import Loading from './../components/Loading';
   import NoData from './../components/NoData';
+  import {Pagination} from 'element-ui';
   export default {
     name: 'order-list',
     data(){
       return{
         list:[], // 订单列表
-        loading:true 
+        loading:true,
+        pageNum:1,
+        total:0,
+        pageSize:10
       }
     },
     components:{
       OrderHeader,
       Loading,
-      NoData
+      NoData,
+      [Pagination.name]:Pagination
     },
     mounted(){
       this.getOrderList();
     },
     methods:{
       getOrderList(){
-        this.axios.get('/orders').then((res)=>{
+        this.axios.get('/orders',{
+          params:{
+            pageNum:this.pageNum
+          }
+        }).then((res)=>{
           this.loading = false;
           this.list = res.list;
+          this.total = res.total;
+        }).catch(()=>{
+          this.loading = false;
         })
+      },
+      pageChange(pageNum){
+        this.pageNum = pageNum;
+        this.getOrderList();
       },
       goPay(orderNo){
         //路由跳转的三种方式
@@ -160,6 +184,13 @@
             }
           }
         }
+      }
+      .pagination{
+        text-align: right;
+      }
+      .el-pagination.is-background .el-pager li:not(.disabled).active {
+        background-color: #FF6600;
+        color: #FFF;
       }
 
     }
