@@ -1,6 +1,6 @@
 <template>
   <div class="loading">
-    <img src="/imgs/loading-svg/loading-bars.svg" alt="">
+    <img src="/imgs/loading-svg/loading-bubbles.svg" alt="">
   </div>
 </template>
 
@@ -10,14 +10,14 @@
   }
 </script>
 
-<style style="scss">
+<style lang="scss">
   .loading{
     height:80px;
     line-height:80px;
     text-align:center;
     padding:30px 0;
-    /* img{
+    img{
       height:100%;
-    } */
+    } 
   }
 </style>
