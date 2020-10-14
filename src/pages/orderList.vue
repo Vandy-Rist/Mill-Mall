@@ -8,6 +8,7 @@
     <div class="wrapper">
       <div class="container">
         <div class="order-box">
+          <loading v-if="loading"></loading>
           <div class="order" v-for="(order,index) in list" :key="index">
             <div class="order-title">
               <div class="item-info fl">
@@ -35,11 +36,15 @@
                   </div>
                 </div>
               </div>
-              <div class="good-status fr">
-                <a href="">{{order.statusDesc}}</a>
+              <div class="good-status fr" v-if="order.status == 20">
+                <a href="javascript:;">{{order.statusDesc}}</a>
+              </div>
+              <div class="good-status fr" v-else>
+                <a href="javascript:;" @click="goPay(order.orderNo)">{{order.statusDesc}}</a>
               </div>
             </div>
           </div>
+          <no-data v-if="!loading && list.length == 0"></no-data>
         </div>
       </div>
     </div>
@@ -48,15 +53,20 @@
 
 <script>
   import OrderHeader from './../components/OrderHeader';
+  import Loading from './../components/Loading';
+  import NoData from './../components/NoData';
   export default {
     name: 'order-list',
     data(){
       return{
-        list:[] // 订单列表
+        list:[], // 订单列表
+        loading:true 
       }
     },
     components:{
-      OrderHeader
+      OrderHeader,
+      Loading,
+      NoData
     },
     mounted(){
       this.getOrderList();
@@ -64,7 +74,25 @@
     methods:{
       getOrderList(){
         this.axios.get('/orders').then((res)=>{
+          this.loading = false;
           this.list = res.list;
+        })
+      },
+      goPay(orderNo){
+        //路由跳转的三种方式
+        // this.$router.push('/order/pay');
+
+        // this.$router.push({
+        //   name: 'order-pay',
+        //   query:{
+        //     orderNo
+        //   }
+        // })
+        this.$router.push({
+          path: '/order/pay',
+          query:{
+            orderNo
+          }
         })
       }
     }
