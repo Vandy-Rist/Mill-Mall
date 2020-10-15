@@ -11,5 +11,8 @@ module.exports = {
 				}
 			}
 		}
-	}
+	},
+	// indexPath: 'index2.html',
+	 // lintOnSave:false,
+	 productionSourceMap:false
 }
