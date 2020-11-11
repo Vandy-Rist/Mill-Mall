@@ -42,7 +42,7 @@
         <div class="video-bg" @click="showSlide='slideDown'"></div>
         <div class="video-box" v-show="showSlide">
           <div class="overlay"></div>
-          <div class="video" :class="'showSlide'">
+          <div class="video" :class="showSlide">
             <div class="icon-close" @click="closeVideo"></div>
             <video src="/imgs/product/video.mp4" muted autoplay controls="controls"></video>
           </div>
@@ -210,11 +210,11 @@
             }
           }
           .video{
+            position: fixed;
             width: 1000px;
             height: 536px;
-            position: fixed;
             left: 50%;
-            top: 50%;
+            top: -50%;
             transform: translate(-50%,-50%);
             z-index: 10;
             opacity: 1;
