@@ -35,11 +35,11 @@
         <a href="https://github.com/Vandy-Rist" target="_blank">Github主页</a><span>|</span>
         <a href="https://vandy-rist.github.io/" target="_blank">Hexo博客</a><span>|</span>
         <a href="javascript:;" target="_blank">我的简历</a><span>|</span>
-        <a href="javascript:;" target="_blank">项目练习</a><span>|</span>
+        <a href="javascript:;" target="_blank">问题反馈</a><span>|</span>
         <a href="javascript:;" target="_blank">谢谢关注</a>
       </div>
       <div class="copyright">Copyright ©2020
-        <span class="domain">mi.futurefe.com</span>
+        <span class="domain">mi.flyfan.top</span>
         All Rights Reserved.
       </div>
   </div>

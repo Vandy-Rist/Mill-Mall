@@ -30,7 +30,7 @@
            <div class="children">
              <ul>
                <li class="product" v-for="(item,index) in phoneList" :key="index">
-                 <a :href="'/#/procuct'+item.id" target="_blank">
+                 <a :href="'/#/product/'+item.id" target="_blank">
                    <div class="pro-img">
                      <img v-lazy="item.mainImage" :alt="item.subTitle">
                    </div>
@@ -180,10 +180,7 @@
           this.$store.dispatch('saveUsername','');
           this.$store.dispatch('saveCartCount','0');
         })
-
-
       }
-
     }
   }
 </script>

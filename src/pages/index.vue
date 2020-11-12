@@ -9,7 +9,7 @@
               <div class="children">
                 <ul v-for="(item,i) in menuList" :key="i">
                   <li v-for="(sub,j) in item" :key="j">
-                    <a :href="sub?'/#/product'+sub.id:''">
+                    <a :href="sub?'/#/product/'+sub.id:''">
                       <img :src="sub?sub.img:'/imgs/item-box-1.png'" >
                       {{sub?sub.name:'小米cc9'}}
                     </a>
